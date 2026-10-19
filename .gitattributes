@@ -1,0 +1,2 @@
+# keep the dataset byte-identical to the supplied file
+*.csv -text

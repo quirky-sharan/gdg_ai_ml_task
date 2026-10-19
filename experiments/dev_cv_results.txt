@@ -1,0 +1,25 @@
+# Rolling-origin CV inside the development period (first 80% of lots); test window never used.
+# Folds: train [0,a) -> validate [a,b) for (a,b) in (40-50%, 50-60%, 60-70%, 70-80%); 22 validation defects.
+# 3 seeds per fold, 60 epochs (cosine T_max=60). Columns: e<epoch>: fold-mean AP / fold-mean ROC-AUC.
+
+[devcv.py q1] quantile orig HP               | meanAP/meanAUC e1:0.089/0.612 e3:0.099/0.629 e5:0.108/0.622 e10:0.104/0.645 e20:0.089/0.633 e30:0.093/0.653 e40:0.092/0.632 e60:0.093/0.634 | best AUC 0.655@31 | 356s
+[devcv.py q1] quantile small drop.3 wd1e-3   | meanAP/meanAUC e1:0.080/0.537 e3:0.082/0.578 e5:0.089/0.586 e10:0.081/0.573 e20:0.088/0.597 e30:0.088/0.592 e40:0.093/0.594 e60:0.084/0.593 | best AUC 0.615@22 | 232s
+[devcv.py q2] quantile lam3                  | meanAP/meanAUC e1:0.089/0.613 e3:0.099/0.633 e5:0.098/0.619 e10:0.089/0.623 e20:0.097/0.625 e30:0.093/0.636 e40:0.091/0.623 e60:0.084/0.616 | best AUC 0.641@31 | 356s
+[devcv.py q2] quantile drop.3 wd1e-3         | meanAP/meanAUC e1:0.086/0.593 e3:0.101/0.641 e5:0.094/0.611 e10:0.093/0.641 e20:0.091/0.640 e30:0.090/0.621 e40:0.092/0.633 e60:0.087/0.631 | best AUC 0.654@11 | 309s
+[devcv.py q3] quantile +mask ch              | meanAP/meanAUC e1:0.097/0.621 e3:0.086/0.620 e5:0.088/0.619 e10:0.084/0.593 e20:0.093/0.628 e30:0.096/0.639 e40:0.098/0.633 e60:0.095/0.628 | best AUC 0.643@35 | 315s
+[devcv.py q3] quantile pw sqrt               | meanAP/meanAUC e1:0.086/0.602 e3:0.105/0.629 e5:0.101/0.628 e10:0.102/0.659 e20:0.091/0.659 e30:0.085/0.663 e40:0.082/0.651 e60:0.081/0.643 | best AUC 0.673@7 | 325s
+[devcv.py q4] quantile lr3e-4                | meanAP/meanAUC e1:0.077/0.563 e3:0.090/0.627 e5:0.100/0.645 e10:0.102/0.615 e20:0.100/0.644 e30:0.100/0.642 e40:0.095/0.648 e60:0.095/0.649 | best AUC 0.650@49 | 304s
+[devcv.py q4] quantile 128/16                | meanAP/meanAUC e1:0.107/0.573 e3:0.090/0.622 e5:0.085/0.598 e10:0.093/0.582 e20:0.092/0.631 e30:0.097/0.658 e40:0.095/0.661 e60:0.094/0.665 | best AUC 0.665@36 | 284s
+[devcv.py q5] quantile no legacy feats       | meanAP/meanAUC e1:0.073/0.627 e3:0.091/0.644 e5:0.084/0.616 e10:0.087/0.614 e20:0.080/0.611 e30:0.073/0.608 e40:0.077/0.614 e60:0.077/0.614 | best AUC 0.644@3 | 304s
+[devcv.py q5] quantile maxmiss .2            | meanAP/meanAUC e1:0.072/0.606 e3:0.072/0.598 e5:0.070/0.559 e10:0.068/0.582 e20:0.077/0.584 e30:0.070/0.577 e40:0.068/0.562 e60:0.067/0.564 | best AUC 0.606@1 | 321s
+[devcv.py sae1] base(orig HP)                  | meanAP/meanAUC e1:0.054/0.514 e3:0.054/0.577 e5:0.054/0.589 e10:0.052/0.593 e20:0.063/0.613 e30:0.057/0.600 e40:0.055/0.595 e60:0.058/0.603 | best AUC 0.613@20 | 348s
+[devcv.py sae1] small 64/8 drop.3 wd1e-3       | meanAP/meanAUC e1:0.068/0.452 e3:0.072/0.553 e5:0.075/0.614 e10:0.070/0.595 e20:0.070/0.606 e30:0.065/0.601 e40:0.064/0.597 e60:0.066/0.604 | best AUC 0.656@8 | 223s
+
+# Reference (non-SAE) models, same rolling-origin folds, z-scored legacy-aware features (devcv.py sk):
+[devcv.py sk] LR C=1e-3                      | per-fold AUC [0.626 0.575 0.51  0.468] | meanAP 0.066 meanAUC 0.545
+[devcv.py sk] LR C=1e-4                      | per-fold AUC [0.523 0.593 0.532 0.526] | meanAP 0.061 meanAUC 0.543
+[devcv.py sk] RF                             | per-fold AUC [0.916 0.614 0.786 0.638] | meanAP 0.138 meanAUC 0.739
+
+# Decision: rank-based (quantile) scaling with the release-candidate hyper-parameters (256/32, lr 1e-3, wd 1e-5,
+# dropout 0.1, lambda 1, pos_weight = n_pass/n_fail). It beats z-scoring clearly (AP ~0.09-0.11 vs ~0.055); no other
+# variant is better beyond seed/fold noise, so the release-candidate architecture is kept unchanged.

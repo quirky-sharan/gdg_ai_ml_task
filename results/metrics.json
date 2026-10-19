@@ -1,0 +1,163 @@
+{
+  "release_candidate_reproduced": {
+    "F1": 0.9915,
+    "precision": 0.9832,
+    "recall": 1.0,
+    "ROC_AUC": 1.0,
+    "AP": 1.0,
+    "prevalence": 0.5
+  },
+  "release_candidate_honest_protocol": {
+    "F1": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "ROC_AUC": 0.713,
+    "AP": 0.1367,
+    "prevalence": 0.0543
+  },
+  "split": {
+    "dev_lots": 1254,
+    "test_lots": 313,
+    "test_defects": 17,
+    "test_prevalence": 0.0543,
+    "dataset_prevalence": 0.0664,
+    "test_window": [
+      "2008-10-02T21:32:00.000000",
+      "2008-10-17T06:07:00.000000"
+    ]
+  },
+  "selection": {
+    "epochs": 38,
+    "threshold": 0.1418,
+    "val_pooled_AP": 0.0618,
+    "val_pooled_ROC_AUC": 0.5455,
+    "val_F1": 0.1961
+  },
+  "test": {
+    "AP": 0.2331,
+    "ROC_AUC": 0.6975,
+    "precision": 0.2857,
+    "recall": 0.1176,
+    "F1": 0.1667,
+    "MCC": 0.1544,
+    "balanced_acc": 0.5504,
+    "FPR": 0.0169,
+    "alarm_rate": 0.0224,
+    "TP": 2,
+    "FP": 5,
+    "FN": 15,
+    "TN": 291,
+    "AP_at_target": 0.2553,
+    "precision_at_target": 0.3311,
+    "F1_at_target": 0.1736
+  },
+  "test_95ci": {
+    "AP": [
+      0.0785,
+      0.4357
+    ],
+    "ROC_AUC": [
+      0.5602,
+      0.8328
+    ],
+    "precision": [
+      0.0,
+      0.6667
+    ],
+    "recall": [
+      0.0,
+      0.3
+    ],
+    "F1": [
+      0.0,
+      0.381
+    ],
+    "MCC": [
+      -0.0344,
+      0.3854
+    ]
+  },
+  "reference_models_test": {
+    "no-skill": {
+      "AP": 0.054,
+      "ROC_AUC": 0.5
+    },
+    "logistic regression": {
+      "AP": 0.187,
+      "ROC_AUC": 0.669
+    },
+    "random forest": {
+      "AP": 0.1,
+      "ROC_AUC": 0.634
+    },
+    "WaferSAE (repaired)": {
+      "AP": 0.233,
+      "ROC_AUC": 0.698
+    }
+  },
+  "ablations_test": {
+    "repaired pipeline": {
+      "test_AP": 0.2331,
+      "test_ROC_AUC": 0.6975,
+      "test_recon_MSE": 1.1012
+    },
+    "+ Bug 2: broadcast recon loss": {
+      "test_AP": 0.2117,
+      "test_ROC_AUC": 0.6707,
+      "test_recon_MSE": 1.4245
+    },
+    "+ Bug 3: PS-L sentinel/codes as numbers": {
+      "test_AP": 0.2347,
+      "test_ROC_AUC": 0.6963,
+      "test_recon_MSE": null
+    },
+    "+ Bug 1c: preprocessor fit incl. test": {
+      "test_AP": 0.1481,
+      "test_ROC_AUC": 0.6735,
+      "test_recon_MSE": null
+    },
+    "design: z-scoring instead of quantile": {
+      "test_AP": 0.131,
+      "test_ROC_AUC": 0.7138,
+      "test_recon_MSE": null
+    }
+  },
+  "test_alarm_budgets_descriptive": [
+    {
+      "alarm budget": "2%",
+      "lots flagged": 6,
+      "defects caught": 2,
+      "recall": 0.1176,
+      "precision": 0.3333
+    },
+    {
+      "alarm budget": "5%",
+      "lots flagged": 16,
+      "defects caught": 4,
+      "recall": 0.2353,
+      "precision": 0.25
+    },
+    {
+      "alarm budget": "10%",
+      "lots flagged": 31,
+      "defects caught": 5,
+      "recall": 0.2941,
+      "precision": 0.1613
+    },
+    {
+      "alarm budget": "20%",
+      "lots flagged": 63,
+      "defects caught": 8,
+      "recall": 0.4706,
+      "precision": 0.127
+    }
+  ],
+  "time_shuffled_cv": {
+    "AP": 0.1606,
+    "ROC_AUC": 0.7118
+  },
+  "release_gate": {
+    "F1_threshold": 0.9,
+    "passed": false
+  }
+}

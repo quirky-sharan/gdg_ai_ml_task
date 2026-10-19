@@ -1,0 +1,13 @@
+# tested with: python 3.11, torch 2.11.0 (CPU), scikit-learn 1.8.0, imbalanced-learn 0.14.2,
+#              numpy 2.4.4, pandas 3.0.2, matplotlib 3.11
+torch>=2.2
+scikit-learn>=1.2
+imbalanced-learn>=0.11   # only to reproduce the release candidate (Part A); the repaired pipeline uses no SMOTE
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+joblib
+# to rebuild / execute the notebook from the command line (tools/)
+nbformat
+nbclient
+ipykernel
